@@ -1,0 +1,714 @@
+version: 2
+sources:
+  - name: raw_data
+    schema: '{{ var ("source_dataset_name") }}'
+    tables:
+      - name: _dlt_loads
+      - name: activities
+      - name: persons
+      - name: organizations
+      - name: products
+      - name: users
+      - name: leads
+      - name: custom_fields_mapping
+      - name: deals_flow_activity
+      - name: deals
+      - name: deals_flow_deal_change
+      - name: deals_participants
+      - name: activities__participants
+      - name: deals__label
+      - name: deals_flow_activity__participants
+      - name: deals_participants__person_id__email
+      - name: deals_participants__person_id__phone
+      - name: deals_participants__person__phone
+      - name: deals_participants__person__email
+      - name: deals_participants__person__im
+      - name: persons__phone
+      - name: persons__email
+      - name: persons__im
+      - name: persons__labels
+      - name: persons__multiple_options
+      - name: products__prices
+  - name: transformed_data
+    schema: '{{ var ("destination_dataset_name") }}'
+    tables:
+      - name: dlt_processed_load_ids
+
+models:
+      - name: dlt_processed_load_ids
+        description: "This table contains all processed load ids for incremental loading"
+      - name: _dlt_loads
+        description: "Created by DLT. Tracks completed loads"
+        columns:
+          - name: load_id
+            tests:
+              - not_null
+          - name: schema_name
+          - name: status
+            tests:
+              - not_null
+          - name: inserted_at
+            tests:
+              - not_null
+          - name: schema_version_hash
+      - name: activities
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: company_id
+          - name: user_id
+          - name: done
+          - name: type
+          - name: due_date
+          - name: due_time
+          - name: duration
+          - name: busy_flag
+          - name: add_time
+          - name: marked_as_done_time
+          - name: subject
+          - name: public_description
+          - name: org_id
+          - name: person_id
+          - name: deal_id
+          - name: active_flag
+          - name: update_time
+          - name: private
+          - name: created_by_user_id
+          - name: org_name
+          - name: person_name
+          - name: deal_title
+          - name: owner_name
+          - name: person_dropbox_bcc
+          - name: deal_dropbox_bcc
+          - name: assigned_to_user_id
+          - name: type_name
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: persons
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: company_id
+          - name: owner_id
+          - name: name
+          - name: first_name
+          - name: open_deals_count
+          - name: related_open_deals_count
+          - name: closed_deals_count
+          - name: related_closed_deals_count
+          - name: participant_open_deals_count
+          - name: participant_closed_deals_count
+          - name: email_messages_count
+          - name: activities_count
+          - name: done_activities_count
+          - name: undone_activities_count
+          - name: files_count
+          - name: notes_count
+          - name: followers_count
+          - name: won_deals_count
+          - name: related_won_deals_count
+          - name: lost_deals_count
+          - name: related_lost_deals_count
+          - name: active_flag
+          - name: first_char
+          - name: update_time
+          - name: add_time
+          - name: visible_to
+          - name: owner_name
+          - name: cc_email
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+          - name: last_name
+          - name: org_id
+          - name: org_name
+          - name: test_field_1
+          - name: next_activity_date
+          - name: next_activity_id
+          - name: test_field_2
+          - name: label
+          - name: single_option
+      - name: organizations
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: company_id
+          - name: owner_id
+          - name: name
+          - name: open_deals_count
+          - name: related_open_deals_count
+          - name: closed_deals_count
+          - name: related_closed_deals_count
+          - name: email_messages_count
+          - name: people_count
+          - name: activities_count
+          - name: done_activities_count
+          - name: undone_activities_count
+          - name: files_count
+          - name: notes_count
+          - name: followers_count
+          - name: won_deals_count
+          - name: related_won_deals_count
+          - name: lost_deals_count
+          - name: related_lost_deals_count
+          - name: active_flag
+          - name: first_char
+          - name: update_time
+          - name: add_time
+          - name: visible_to
+          - name: cc_email
+          - name: owner_name
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+          - name: next_activity_date
+          - name: next_activity_id
+      - name: products
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: name
+          - name: code
+          - name: tax
+          - name: active_flag
+          - name: selectable
+          - name: first_char
+          - name: visible_to
+          - name: owner_id
+          - name: add_time
+          - name: update_time
+          - name: owner_name
+          - name: category
+          - name: test_field_1
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+          - name: description
+          - name: unit
+          - name: spam
+      - name: users
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: name
+          - name: default_currency
+          - name: timezone_name
+          - name: timezone_offset
+          - name: locale
+          - name: email
+          - name: created
+          - name: modified
+          - name: lang
+          - name: active_flag
+          - name: is_admin
+          - name: last_login
+          - name: signup_flow_variation
+          - name: role_id
+          - name: has_created_company
+          - name: is_you
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: leads
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: title
+          - name: owner_id
+          - name: creator_id
+          - name: person_id
+          - name: is_archived
+          - name: source_name
+          - name: origin
+          - name: was_seen
+          - name: add_time
+          - name: update_time
+          - name: visible_to
+          - name: cc_email
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: custom_fields_mapping
+        columns:
+          - name: options
+            tests:
+              - not_null
+          - name: endpoint
+          - name: hash_string
+          - name: name
+          - name: normalized_name
+          - name: field_type
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_flow_activity
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: company_id
+          - name: user_id
+          - name: done
+          - name: type
+          - name: due_date
+          - name: due_time
+          - name: duration
+          - name: busy_flag
+          - name: add_time
+          - name: marked_as_done_time
+          - name: subject
+          - name: public_description
+          - name: org_id
+          - name: person_id
+          - name: deal_id
+          - name: active_flag
+          - name: update_time
+          - name: private
+          - name: created_by_user_id
+          - name: org_name
+          - name: person_name
+          - name: deal_title
+          - name: owner_name
+          - name: person_dropbox_bcc
+          - name: deal_dropbox_bcc
+          - name: assigned_to_user_id
+          - name: type_name
+          - name: timestamp
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: creator_user_id
+          - name: user_id
+          - name: person_id
+          - name: org_id
+          - name: stage_id
+          - name: title
+          - name: value
+          - name: currency
+          - name: add_time
+          - name: update_time
+          - name: stage_change_time
+          - name: active
+          - name: deleted
+          - name: status
+          - name: next_activity_date
+          - name: next_activity_id
+          - name: visible_to
+          - name: pipeline_id
+          - name: products_count
+          - name: files_count
+          - name: notes_count
+          - name: followers_count
+          - name: email_messages_count
+          - name: activities_count
+          - name: done_activities_count
+          - name: undone_activities_count
+          - name: participants_count
+          - name: expected_close_date
+          - name: origin
+          - name: stage_order_nr
+          - name: person_name
+          - name: org_name
+          - name: next_activity_subject
+          - name: next_activity_type
+          - name: formatted_value
+          - name: weighted_value
+          - name: formatted_weighted_value
+          - name: weighted_value_currency
+          - name: owner_name
+          - name: cc_email
+          - name: org_hidden
+          - name: person_hidden
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_flow_deal_change
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: item_id
+          - name: user_id
+          - name: field_key
+          - name: old_value
+          - name: new_value
+          - name: log_time
+          - name: change_source
+          - name: change_source_user_agent
+          - name: additional_data__old_value_formatted
+          - name: additional_data__new_value_formatted
+          - name: timestamp
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_participants
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: person_id__active_flag
+          - name: person_id__name
+          - name: person_id__owner_id
+          - name: person_id__value
+          - name: add_time
+          - name: active_flag
+          - name: related_item_data__deal_id
+          - name: related_item_data__title
+          - name: person__id
+          - name: person__company_id
+          - name: person__owner_id__id
+          - name: person__owner_id__name
+          - name: person__owner_id__email
+          - name: person__owner_id__has_pic
+          - name: person__owner_id__active_flag
+          - name: person__owner_id__value
+          - name: person__org_id__name
+          - name: person__org_id__people_count
+          - name: person__org_id__owner_id
+          - name: person__org_id__active_flag
+          - name: person__org_id__cc_email
+          - name: person__org_id__owner_name
+          - name: person__org_id__value
+          - name: person__name
+          - name: person__first_name
+          - name: person__open_deals_count
+          - name: person__related_open_deals_count
+          - name: person__closed_deals_count
+          - name: person__related_closed_deals_count
+          - name: person__participant_open_deals_count
+          - name: person__participant_closed_deals_count
+          - name: person__email_messages_count
+          - name: person__activities_count
+          - name: person__done_activities_count
+          - name: person__undone_activities_count
+          - name: person__files_count
+          - name: person__notes_count
+          - name: person__followers_count
+          - name: person__won_deals_count
+          - name: person__related_won_deals_count
+          - name: person__lost_deals_count
+          - name: person__related_lost_deals_count
+          - name: person__active_flag
+          - name: person__first_char
+          - name: person__update_time
+          - name: person__add_time
+          - name: person__visible_to
+          - name: person__sync_needed
+          - name: person__org_name
+          - name: person__owner_name
+          - name: person__primary_email
+          - name: person___8c765c39b4685f0ed9fe839a594f8bb7374df744
+          - name: person__cc_email
+          - name: added_by_user_id__id
+          - name: added_by_user_id__name
+          - name: added_by_user_id__email
+          - name: added_by_user_id__has_pic
+          - name: added_by_user_id__active_flag
+          - name: added_by_user_id__value
+          - name: related_item_type
+          - name: related_item_id
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+          - name: person__last_name
+      - name: activities__participants
+        columns:
+          - name: person_id
+          - name: primary_flag
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals__label
+        columns:
+          - name: value
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_flow_activity__participants
+        columns:
+          - name: person_id
+          - name: primary_flag
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_participants__person_id__email
+        columns:
+          - name: label
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_participants__person_id__phone
+        columns:
+          - name: label
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_participants__person__phone
+        columns:
+          - name: label
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_participants__person__email
+        columns:
+          - name: label
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: deals_participants__person__im
+        columns:
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: persons__phone
+        columns:
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+          - name: label
+      - name: persons__email
+        columns:
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+          - name: label
+      - name: persons__im
+        columns:
+          - name: value
+          - name: primary
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: persons__labels
+        columns:
+          - name: value
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: persons__multiple_options
+        columns:
+          - name: value
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
+      - name: products__prices
+        columns:
+          - name: id
+          - name: product_id
+          - name: price
+          - name: currency
+          - name: cost
+          - name: notes
+          - name: _dlt_root_id
+            tests:
+              - not_null
+          - name: _dlt_parent_id
+            tests:
+              - not_null
+          - name: _dlt_list_idx
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
