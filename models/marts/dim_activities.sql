@@ -1,4 +1,4 @@
-/* Table: deals_flow_activity */
+/* Table: activities */
 {{
     config(
         materialized='incremental'
@@ -33,8 +33,7 @@ SELECT
     t.deal_dropbox_bcc,
     t.assigned_to_user_id,
     t.type_name,
-    t.timestamp,
     t._dlt_load_id,
     t._dlt_id,
     t.marked_as_done_time__v_text,
-FROM  {{ ref('stg_deals_flow_activity') }} as t
+FROM  {{ ref('stg_activities') }} as t

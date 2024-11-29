@@ -130,12 +130,12 @@ for data model which can be further modified as required.
 
 1. The schema of data modelled above using dlt-dbt-generator:
     
-   ![picture1](https://storage.googleapis.com/dlt-blog-images/pipedrive-dlt-dbt-package%20(1).png)
+   ![picture1](https://storage.googleapis.com/dlt-blog-images/pipedrive_dlt_dbt_dim_model.png)
 
 > Please note that this is a starting template for your data model and is not the final product. It is advised to customize the
 > data model as per your needs.
 
-Here's the link to the DB diagram: [link](https://dbdiagram.io/d/pipedrive-dlt-dbt-package-66ff4a7cfb079c7ebd49efa9).
+Here's the link to the DB diagram: [link](https://dbdiagram.io/d/pipedrive_dlt_dbt_v1-5-6749a24ae9daa85aca219163).
 
 #### Optional: Advanced Usage (Generator and Licensing)
 

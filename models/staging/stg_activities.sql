@@ -39,6 +39,7 @@ SELECT
     type_name,
     _dlt_load_id,
     _dlt_id,
+    marked_as_done_time__v_text,
 FROM {{ source('raw_data', 'activities') }}
 
 /* we only load table items of the currently active load ids into the staging table */

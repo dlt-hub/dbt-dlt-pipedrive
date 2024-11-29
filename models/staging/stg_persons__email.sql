@@ -11,13 +11,13 @@
 
 SELECT
 /* select which columns will be available for table 'persons__email' */
+    label,
     value,
     primary,
     _dlt_root_id,
     _dlt_parent_id,
     _dlt_list_idx,
     _dlt_id,
-    label,
 FROM {{ source('raw_data', 'persons__email') }}
 
 /* we only load table items if the parent table has the parent item */

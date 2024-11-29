@@ -5,18 +5,17 @@ sources:
     tables:
       - name: _dlt_loads
       - name: activities
+      - name: notes
       - name: persons
       - name: organizations
-      - name: products
       - name: users
-      - name: leads
       - name: custom_fields_mapping
       - name: deals_flow_activity
       - name: deals
       - name: deals_flow_deal_change
       - name: deals_participants
+      - name: deals_flow_note
       - name: activities__participants
-      - name: deals__label
       - name: deals_flow_activity__participants
       - name: deals_participants__person_id__email
       - name: deals_participants__person_id__phone
@@ -26,9 +25,6 @@ sources:
       - name: persons__phone
       - name: persons__email
       - name: persons__im
-      - name: persons__labels
-      - name: persons__multiple_options
-      - name: products__prices
   - name: transformed_data
     schema: '{{ var ("destination_dataset_name") }}'
     tables:
@@ -90,6 +86,37 @@ models:
             tests:
               - not_null
               - unique
+          - name: marked_as_done_time__v_text
+      - name: notes
+        columns:
+          - name: id
+            tests:
+              - not_null
+          - name: user_id
+          - name: deal_id
+          - name: person_id
+          - name: org_id
+          - name: content
+          - name: add_time
+          - name: update_time
+          - name: active_flag
+          - name: pinned_to_deal_flag
+          - name: pinned_to_person_flag
+          - name: pinned_to_organization_flag
+          - name: pinned_to_lead_flag
+          - name: organization__name
+          - name: person__name
+          - name: deal__title
+          - name: user__email
+          - name: user__name
+          - name: user__is_you
+          - name: _dlt_load_id
+            tests:
+              - not_null
+          - name: _dlt_id
+            tests:
+              - not_null
+              - unique
       - name: persons
         columns:
           - name: id
@@ -99,6 +126,7 @@ models:
           - name: owner_id
           - name: name
           - name: first_name
+          - name: last_name
           - name: open_deals_count
           - name: related_open_deals_count
           - name: closed_deals_count
@@ -130,15 +158,12 @@ models:
             tests:
               - not_null
               - unique
-          - name: last_name
           - name: org_id
+          - name: last_activity_id
+          - name: last_activity_date
           - name: org_name
-          - name: test_field_1
           - name: next_activity_date
           - name: next_activity_id
-          - name: test_field_2
-          - name: label
-          - name: single_option
       - name: organizations
         columns:
           - name: id
@@ -168,6 +193,8 @@ models:
           - name: update_time
           - name: add_time
           - name: visible_to
+          - name: last_activity_id
+          - name: last_activity_date
           - name: cc_email
           - name: owner_name
           - name: _dlt_load_id
@@ -179,34 +206,6 @@ models:
               - unique
           - name: next_activity_date
           - name: next_activity_id
-      - name: products
-        columns:
-          - name: id
-            tests:
-              - not_null
-          - name: name
-          - name: code
-          - name: tax
-          - name: active_flag
-          - name: selectable
-          - name: first_char
-          - name: visible_to
-          - name: owner_id
-          - name: add_time
-          - name: update_time
-          - name: owner_name
-          - name: category
-          - name: test_field_1
-          - name: _dlt_load_id
-            tests:
-              - not_null
-          - name: _dlt_id
-            tests:
-              - not_null
-              - unique
-          - name: description
-          - name: unit
-          - name: spam
       - name: users
         columns:
           - name: id
@@ -218,6 +217,7 @@ models:
           - name: timezone_offset
           - name: locale
           - name: email
+          - name: phone
           - name: created
           - name: modified
           - name: lang
@@ -228,30 +228,6 @@ models:
           - name: role_id
           - name: has_created_company
           - name: is_you
-          - name: _dlt_load_id
-            tests:
-              - not_null
-          - name: _dlt_id
-            tests:
-              - not_null
-              - unique
-      - name: leads
-        columns:
-          - name: id
-            tests:
-              - not_null
-          - name: title
-          - name: owner_id
-          - name: creator_id
-          - name: person_id
-          - name: is_archived
-          - name: source_name
-          - name: origin
-          - name: was_seen
-          - name: add_time
-          - name: update_time
-          - name: visible_to
-          - name: cc_email
           - name: _dlt_load_id
             tests:
               - not_null
@@ -316,6 +292,7 @@ models:
             tests:
               - not_null
               - unique
+          - name: marked_as_done_time__v_text
       - name: deals
         columns:
           - name: id
@@ -331,14 +308,16 @@ models:
           - name: currency
           - name: add_time
           - name: update_time
-          - name: stage_change_time
           - name: active
           - name: deleted
           - name: status
-          - name: next_activity_date
-          - name: next_activity_id
+          - name: last_activity_id
+          - name: last_activity_date
+          - name: lost_reason
           - name: visible_to
+          - name: close_time
           - name: pipeline_id
+          - name: lost_time
           - name: products_count
           - name: files_count
           - name: notes_count
@@ -349,12 +328,11 @@ models:
           - name: undone_activities_count
           - name: participants_count
           - name: expected_close_date
-          - name: origin
+          - name: local_lost_date
+          - name: local_close_date
           - name: stage_order_nr
           - name: person_name
           - name: org_name
-          - name: next_activity_subject
-          - name: next_activity_type
           - name: formatted_value
           - name: weighted_value
           - name: formatted_weighted_value
@@ -370,6 +348,13 @@ models:
             tests:
               - not_null
               - unique
+          - name: won_time
+          - name: first_won_time
+          - name: local_won_date
+          - name: next_activity_date
+          - name: next_activity_id
+          - name: next_activity_subject
+          - name: next_activity_type
       - name: deals_flow_deal_change
         columns:
           - name: id
@@ -378,13 +363,10 @@ models:
           - name: item_id
           - name: user_id
           - name: field_key
-          - name: old_value
           - name: new_value
           - name: log_time
           - name: change_source
           - name: change_source_user_agent
-          - name: additional_data__old_value_formatted
-          - name: additional_data__new_value_formatted
           - name: timestamp
           - name: _dlt_load_id
             tests:
@@ -423,6 +405,7 @@ models:
           - name: person__org_id__value
           - name: person__name
           - name: person__first_name
+          - name: person__last_name
           - name: person__open_deals_count
           - name: person__related_open_deals_count
           - name: person__closed_deals_count
@@ -446,10 +429,11 @@ models:
           - name: person__add_time
           - name: person__visible_to
           - name: person__sync_needed
+          - name: person__last_activity_id
+          - name: person__last_activity_date
           - name: person__org_name
           - name: person__owner_name
           - name: person__primary_email
-          - name: person___8c765c39b4685f0ed9fe839a594f8bb7374df744
           - name: person__cc_email
           - name: added_by_user_id__id
           - name: added_by_user_id__name
@@ -466,27 +450,43 @@ models:
             tests:
               - not_null
               - unique
-          - name: person__last_name
-      - name: activities__participants
+          - name: person__next_activity_date
+          - name: person__next_activity_id
+      - name: deals_flow_note
         columns:
+          - name: id
+            tests:
+              - not_null
+          - name: user_id
+          - name: deal_id
           - name: person_id
-          - name: primary_flag
-          - name: _dlt_root_id
-            tests:
-              - not_null
-          - name: _dlt_parent_id
-            tests:
-              - not_null
-          - name: _dlt_list_idx
+          - name: org_id
+          - name: content
+          - name: add_time
+          - name: update_time
+          - name: active_flag
+          - name: pinned_to_deal_flag
+          - name: pinned_to_person_flag
+          - name: pinned_to_organization_flag
+          - name: pinned_to_lead_flag
+          - name: organization__name
+          - name: person__name
+          - name: deal__title
+          - name: user__email
+          - name: user__name
+          - name: user__is_you
+          - name: timestamp
+          - name: _dlt_load_id
             tests:
               - not_null
           - name: _dlt_id
             tests:
               - not_null
               - unique
-      - name: deals__label
+      - name: activities__participants
         columns:
-          - name: value
+          - name: person_id
+          - name: primary_flag
           - name: _dlt_root_id
             tests:
               - not_null
@@ -608,6 +608,7 @@ models:
               - unique
       - name: persons__phone
         columns:
+          - name: label
           - name: value
           - name: primary
           - name: _dlt_root_id
@@ -623,9 +624,9 @@ models:
             tests:
               - not_null
               - unique
-          - name: label
       - name: persons__email
         columns:
+          - name: label
           - name: value
           - name: primary
           - name: _dlt_root_id
@@ -641,64 +642,10 @@ models:
             tests:
               - not_null
               - unique
-          - name: label
       - name: persons__im
         columns:
           - name: value
           - name: primary
-          - name: _dlt_root_id
-            tests:
-              - not_null
-          - name: _dlt_parent_id
-            tests:
-              - not_null
-          - name: _dlt_list_idx
-            tests:
-              - not_null
-          - name: _dlt_id
-            tests:
-              - not_null
-              - unique
-      - name: persons__labels
-        columns:
-          - name: value
-          - name: _dlt_root_id
-            tests:
-              - not_null
-          - name: _dlt_parent_id
-            tests:
-              - not_null
-          - name: _dlt_list_idx
-            tests:
-              - not_null
-          - name: _dlt_id
-            tests:
-              - not_null
-              - unique
-      - name: persons__multiple_options
-        columns:
-          - name: value
-          - name: _dlt_root_id
-            tests:
-              - not_null
-          - name: _dlt_parent_id
-            tests:
-              - not_null
-          - name: _dlt_list_idx
-            tests:
-              - not_null
-          - name: _dlt_id
-            tests:
-              - not_null
-              - unique
-      - name: products__prices
-        columns:
-          - name: id
-          - name: product_id
-          - name: price
-          - name: currency
-          - name: cost
-          - name: notes
           - name: _dlt_root_id
             tests:
               - not_null

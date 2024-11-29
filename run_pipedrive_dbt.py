@@ -6,7 +6,7 @@ if __name__ == "__main__":
     into your main dlt runner file and execute the transformation right after your
     pipeline.run(...) command
     """
-    p = dlt.pipeline(pipeline_name="pipedrive", destination="bigquery") # Configure your destination
+    p = dlt.pipeline(pipeline_name="pipedrive", destination="bigquery")
     venv = dlt.dbt.get_venv(p)
     dbt = dlt.dbt.package(p, "dbt_pipedrive", venv=venv)
 

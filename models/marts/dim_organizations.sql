@@ -30,6 +30,8 @@ SELECT
     t.update_time,
     t.add_time,
     t.visible_to,
+    t.last_activity_id,
+    t.last_activity_date,
     t.cc_email,
     t.owner_name,
     t._dlt_load_id,

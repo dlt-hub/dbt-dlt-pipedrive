@@ -35,6 +35,7 @@ SELECT
     person__org_id__value,
     person__name,
     person__first_name,
+    person__last_name,
     person__open_deals_count,
     person__related_open_deals_count,
     person__closed_deals_count,
@@ -58,10 +59,11 @@ SELECT
     person__add_time,
     person__visible_to,
     person__sync_needed,
+    person__last_activity_id,
+    person__last_activity_date,
     person__org_name,
     person__owner_name,
     person__primary_email,
-    person___8c765c39b4685f0ed9fe839a594f8bb7374df744,
     person__cc_email,
     added_by_user_id__id,
     added_by_user_id__name,
@@ -73,7 +75,8 @@ SELECT
     related_item_id,
     _dlt_load_id,
     _dlt_id,
-    person__last_name,
+    person__next_activity_date,
+    person__next_activity_id,
 FROM {{ source('raw_data', 'deals_participants') }}
 
 /* we only load table items of the currently active load ids into the staging table */

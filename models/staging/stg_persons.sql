@@ -14,6 +14,7 @@ SELECT
     owner_id,
     name,
     first_name,
+    last_name,
     open_deals_count,
     related_open_deals_count,
     closed_deals_count,
@@ -40,15 +41,12 @@ SELECT
     cc_email,
     _dlt_load_id,
     _dlt_id,
-    last_name,
     org_id,
+    last_activity_id,
+    last_activity_date,
     org_name,
-    test_field_1,
     next_activity_date,
     next_activity_id,
-    test_field_2,
-    label,
-    single_option,
 FROM {{ source('raw_data', 'persons') }}
 
 /* we only load table items of the currently active load ids into the staging table */

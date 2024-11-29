@@ -34,6 +34,8 @@ SELECT
     update_time,
     add_time,
     visible_to,
+    last_activity_id,
+    last_activity_date,
     cc_email,
     owner_name,
     _dlt_load_id,

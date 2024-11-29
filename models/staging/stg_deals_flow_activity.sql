@@ -40,6 +40,7 @@ SELECT
     timestamp,
     _dlt_load_id,
     _dlt_id,
+    marked_as_done_time__v_text,
 FROM {{ source('raw_data', 'deals_flow_activity') }}
 
 /* we only load table items of the currently active load ids into the staging table */

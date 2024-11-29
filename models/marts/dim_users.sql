@@ -12,6 +12,7 @@ SELECT
     t.timezone_offset,
     t.locale,
     t.email,
+    t.phone,
     t.created,
     t.modified,
     t.lang,
